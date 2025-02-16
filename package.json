@@ -5,15 +5,17 @@
   "main": "app.js",
   "scripts": {
     "start": "node src/app",
-    "dev": "node --env-file=.env --watch src/app",
+    "dev": "nodemon src/app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.4.0",
-    "network-list": "^1.1.5",
-    "network-speed": "^2.1.1"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
