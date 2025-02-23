@@ -5,6 +5,7 @@ const product=require("./routes/product");
 const admin=require("./routes/admin");
 
 const bodyParser=require("body-parser");
+const cookie=require('cookie-parser');
 
 require("dotenv").config();
 const ip="127.0.0.1";
@@ -20,12 +21,12 @@ const port=process.env.PORT || 3000;
 app.use('/product',product);
 app.use('/admin',admin);
 
+app.use(cookie('secret'));
 app.use(bodyParser.json());
- // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false })); 
 
-app.use(express.static(path.resolve('src/public')));
-app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
+// app.use(express.static(path.resolve('src/public')));
+// app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
 
 // app.use((req,res,next)=>{
 //   console.log(`App starts at ${new Date().toLocaleString()}`);
@@ -34,7 +35,17 @@ app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
 
 app.get('/',(req,res)=>{
   res.setHeader('Content-Type','text/html');
-  res.status(200).send(`<h1>Hello Express, ${new Date().toLocaleString()}</h1>`);
+  
+  // res.cookie("pin","201301",{maxAge:86400000});
+  // res.cookie("state","up",{signed:true});
+
+  if( Object.entries(req.cookies).length ){ 
+    console.log(req.cookies);
+    console.log(req.signedCookies);
+  }
+  else{ console.warn("no cookies found")}
+  
+  res.status(200).send(`<h1>${req.cookies.name}, ${req.cookies.city}</h1>`);
 });
 // app.get('/login',(req,res)=>{
 //   res.setHeader('Content-Type','text/html');
@@ -99,6 +110,7 @@ app.post("/login",(req,res)=>{
   else{
     res.status(200).send("valid credentials");
   }
+  
 });
 
 
