@@ -3,9 +3,14 @@ const app=express();
 const path=require("path");
 const product=require("./routes/product");
 const admin=require("./routes/admin");
+const parseurl=require("parseurl");
 
 const bodyParser=require("body-parser");
 const cookie=require('cookie-parser');
+
+const session=require("express-session");
+
+app.set('trust proxy', 1); 
 
 require("dotenv").config();
 const ip="127.0.0.1";
@@ -25,32 +30,62 @@ app.use(cookie('secret'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false })); 
 
-// app.use(express.static(path.resolve('src/public')));
-// app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
 
-// app.use((req,res,next)=>{
-//   console.log(`App starts at ${new Date().toLocaleString()}`);
-//   next();
-// });
+app.use(session({
+  secret:"session",
+  resave:false,
+  saveUninitialized:true,
+  cookie:{secure:false,maxAge:5000}
+}));
+
+app.use(express.static(path.resolve('src/public')));
+app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
+
+/* app.use((req,res,next)=>{
+  if (!req.session.views) {
+    req.session.views = {}
+  }
+  const pathname=parseurl(req).pathname;
+
+  req.session.views[pathname] = (req.session.views[pathname] || 0) + 1
+
+  console.log(`App starts at ${new Date().toLocaleString()}, ${req.session}`);
+  next();
+}); */
+
+function authenticate(req,res,next){
+  if(new Date().getHours()<12){ next();}
+  else{ res.status(403).send("not authorized") }
+}
 
 app.get('/',(req,res)=>{
+
   res.setHeader('Content-Type','text/html');
   
   // res.cookie("pin","201301",{maxAge:86400000});
   // res.cookie("state","up",{signed:true});
 
-  if( Object.entries(req.cookies).length ){ 
-    console.log(req.cookies);
-    console.log(req.signedCookies);
-  }
-  else{ console.warn("no cookies found")}
+  // if( Object.entries(req.cookies).length ){ 
+  //   console.log(req.cookies);
+  //   console.log(req.signedCookies);
+  // }
+  // else{ console.warn("no cookies found")}
   
-  res.status(200).send(`<h1>${req.cookies.name}, ${req.cookies.city}</h1>`);
+  // res.status(200).send(`<h1>${req.cookies.name}, ${req.cookies.city}</h1>`);
+
+
+  // res.status(200).send(`<h1>Express </h1> <p>${req.sessionID}, ${req.session.views['/']}</p>`);
+  res.status(200).send(`<h1>Express JS </h1>`);
+
 });
-// app.get('/login',(req,res)=>{
-//   res.setHeader('Content-Type','text/html');
-//   res.status(200).send(`<h1>Login</h1>`);
-// });
+
+
+app.get('/login',authenticate,(req,res)=>{
+  res.setHeader('Content-Type','text/html');
+  res.status(200).sendFile(path.resolve('src/public/login.html'));
+});
+
+
 app.get('/search',(req,res)=>{
   
   const car=req.query.car, age=req.query.age;
@@ -93,9 +128,6 @@ app.get('/api',(req,res)=>{
 });
 
 
-// app.get("/login",(req,res)=>{
-//   res.status(200).send(req.query);
-// });
 
 app.post("/login",(req,res)=>{
   const mail=req.body.email;
