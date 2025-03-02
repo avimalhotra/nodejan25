@@ -18,14 +18,14 @@
    </nav>
    <main class="my-3">
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis reiciendis fugiat saepe eaque repellat nobis. Adipisci nobis molestias quod asperiores ipsum illum minima voluptates eum quo, quisquam eveniet modi aliquid.</p>
-    <h2>Get</h2>
+    <!-- <h2>Get</h2>
     <form action="/search" method="get">
         <label>Search: <input type="search" class="form-control" name="car" required></label>
         <label>Age: <input type="number" class="form-control" name="age" min="0" max="10" required></label>
         <button class="btn btn-primary">Search</button>
-    </form>
+    </form> -->
     <!-- <img src="img/bat.svg" alt="batman" width="300" height="120"> -->
-     <h2>Post</h2>
+     <!-- <h2>Post</h2>
      <form action="/login" method="post" class="row align-items-end">
         <div class="col-auto">
             <label>Email: <input type="email" name="email" required class="form-control"></label>
@@ -34,7 +34,20 @@
             <label>Password: <input type="password" name="pass" required class="form-control"></label>
         </div>
         <div class="col-auto"><button class="btn btn-primary">Login</button></div>
+     </form> -->
+     <button class="btn btn-outline-dark api">Fetch</button>
+     <ol class="my-3 apidata"></ol>
+
+     <h2>Search</h2>
+     <form class="my-3 row align-items-center">
+        <div class="col-auto"><label for="car" class="form-label">Search</label></div>
+        <div class="col-auto"><input id="car" type="search" required class="form-control"></div>
+        <div class="col-auto"><button class="btn btn-primary">Check</button></div>
+        <div class="col-auto"><span class="err"></span></div>
      </form>
+     <ol class="my-3 carsdata"></ol>
+
+
      </main>
      <footer class="my-3">
         <p>&copy; 2025</p>

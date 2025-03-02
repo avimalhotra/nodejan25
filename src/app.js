@@ -28,6 +28,7 @@ app.use('/admin',admin);
 
 app.use(cookie('secret'));
 app.use(bodyParser.json());
+app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: false })); 
 
 
@@ -52,6 +53,7 @@ app.use(express.static(path.resolve('node_modules/bootstrap/dist')));
   console.log(`App starts at ${new Date().toLocaleString()}, ${req.session}`);
   next();
 }); */
+
 
 function authenticate(req,res,next){
   if(new Date().getHours()<12){ next();}
@@ -122,9 +124,54 @@ app.get('/contact',(req,res)=>{
 // });
 
 
+const data=[
+    {"name": "swift", "type": "hatchback", "price":830000},
+    {"name": "dzire", "type": "sedan", "price":980000},
+    {"name": "ciaz", "type": "sedan", "price":1100000},
+    {"name": "baleno", "type": "hatchback", "price":880000},
+    {"name": "fronx", "type": "hatchback", "price":1150000},
+    {"name": "brezza", "type": "suv", "price":1250000},
+    {"name": "grand vitara", "type": "suv", "price":1990000},
+    {"name": "alto", "type": "hatchback", "price":400000},
+    {"name": "wagon r", "type": "hatchback", "price":500000},
+    {"name": "jimny", "type": "suv", "price":1400000}
+];       
+
+
+// const user={name:"avi",id:22};
+
 app.get('/api',(req,res)=>{
-  res.setHeader('Content-Type','text/html');
-  res.status(200).json({name:"avi",id:22});
+  // console.log( req.query.id );
+  
+  // enable CORS policies
+  res.header('Access-Control-Allow-Origin',"*");
+
+  return res.status(200).send(data);
+
+});
+
+app.get('/api/:id',(req,res)=>{
+    const x=req.params.id;    
+
+  // enable CORS policies
+  res.header('Access-Control-Allow-Origin',"*");
+  
+  if(x<=data.length && x>=1 ){
+    return res.status(200).json(data[x-1]);
+  }
+  else{ return res.status(200).json({error:"no car found"}) }
+
+});
+
+app.post("/search",(req,res)=>{
+
+  const x=req.body;
+  const y=JSON.parse(x).car;
+  
+  const cars=data.filter(elem=>elem.name.includes(y) );
+  
+  res.status(200).send(cars);
+
 });
 
 
